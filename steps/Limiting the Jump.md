@@ -12,11 +12,11 @@ In order to create an update loop, you need to add a new method. Below the
 closing bracket of your ```touchBegan``` method, but before the ```@end```,
 add the following:
 
-		- (void)update:(CCTime)delta
-		{
-			// this will be run every frame.
-			// delta is the time that has elapsed since the last time it was run.
-		}
+	- (void)update:(CCTime)delta
+	{
+		// this will be run every frame.
+		// delta is the time that has elapsed since the last time it was run.
+	}
 
 Limiting the jump!
 =======================
@@ -24,7 +24,7 @@ Limiting the jump!
 Now that we have an update loop, limiting the jump is rather easy. We just need to
 clamp the vertical velocity. To do that, in your ```update``` method, add:
 
-			character.physicsBody.velocity = ccp(0, clampf(character.physicsBody.velocity.y, -800, 200));
+	character.physicsBody.velocity = ccp(0, clampf(character.physicsBody.velocity.y, -800, 200));
 
 We are using the method ```clampf``` to ensure that the ```character.physicsBody.velocity.y```
 variable stays within the range ```-800``` to ```200```.
