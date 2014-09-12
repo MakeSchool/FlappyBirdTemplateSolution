@@ -15,7 +15,7 @@ More Obstacles
 ==============
 
 Now that we have one obstacle, lets add more! To do that, lets add a new variable. At the top,
-below where it says ```// declare variables below this line```, add the following:
+below where it says ```// put variables below this line```, add the following:
 
 			float timeSinceObstacle;
 

@@ -6,7 +6,7 @@ you will see power-ups appear between obstacles.
 Next, you'll need to add a method for when you collide with the power-up, which looks
 like this:
 
-		-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair\\*)pair character:(CCSprite\\*)character powerup:(CCSprite\\*)powerup
+		-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)character powerup:(CCSprite *)powerup
 		{
 			return TRUE;
 		}

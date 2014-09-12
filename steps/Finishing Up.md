@@ -7,7 +7,7 @@ between the character and an obstacle. Like touches, we need another method for 
 Add the following below the closing bracket of your ```update``` method,
 but before the ```@end```:
 
-		-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair\\*)pair character:(CCSprite\\*)character level:(CCNode\\*)level
+		-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)character level:(CCNode *)level
 		{
 			[self gameOver];
 			return TRUE;
@@ -29,11 +29,11 @@ the pipes.
 Add the following below the closing bracket of your ```ccPhysicsCollisionBegin``` method,
 but before the ```@end```:
 
-		-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair\\*)pair character:(CCSprite\\*)character goal:(CCNode\\*)goal
+		-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)character goal:(CCNode *)goal
 		{
 			[goal removeFromParent];
 			points++;
-			[self increaseScore];
+			[self updateScore];
 			return TRUE;
 		}
 
