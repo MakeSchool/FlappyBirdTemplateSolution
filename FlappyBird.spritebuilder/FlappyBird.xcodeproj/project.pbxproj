@@ -443,7 +443,7 @@
 				);
 				INFOPLIST_FILE = Source/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				MACH_O_TYPE = mh_execute;
+				MACH_O_TYPE = mh_bundle;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-lz",
@@ -476,7 +476,7 @@
 				);
 				INFOPLIST_FILE = Source/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				MACH_O_TYPE = mh_execute;
+				MACH_O_TYPE = mh_bundle;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lsqlite3",
