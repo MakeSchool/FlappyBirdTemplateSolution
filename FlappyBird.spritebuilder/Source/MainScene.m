@@ -134,7 +134,7 @@
         Obstacle* second = (Obstacle*)[_obstacles objectAtIndex: 1];
         Obstacle* last = (Obstacle*)[_obstacles lastObject];
         
-        powerup.position = ccp(last.position.x + (second.position.x - first.position.x) / 2.0f + character.contentSize.width, arc4random() % 488 + 200);
+        powerup.position = ccp(last.position.x + (second.position.x - first.position.x) / 4.0f + character.contentSize.width, arc4random() % 488 + 200);
         powerup.physicsBody.collisionType = @"powerup";
         powerup.physicsBody.sensor = TRUE;
         
@@ -155,6 +155,9 @@
     _sinceTouch += delta;
     
     character.rotation = clampf(character.rotation, -30.f, 90.f);
+    
+    trail.position = character.position;
+    trail.startColor = [CCColor colorWithCcColor3b:ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255)];
     
     if (character.physicsBody.allowsRotation) {
         float angularVelocity = clampf(character.physicsBody.angularVelocity, -2.f, 1.f);
@@ -191,11 +194,6 @@
             }
             [offScreenObstacles addObject:obstacle];
         }
-    }
-    
-    for (CCNode *obstacleToRemove in offScreenObstacles) {
-        [obstacleToRemove removeFromParent];
-        [_obstacles removeObject:obstacleToRemove];
     }
     
     if (!_gameOver)
