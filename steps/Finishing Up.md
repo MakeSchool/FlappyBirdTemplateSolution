@@ -33,7 +33,7 @@ but before the ```@end```:
 		{
 			[goal removeFromParent];
 			points++;
-			[self increaseScore];
+			[self updateScore];
 			return TRUE;
 		}
 
