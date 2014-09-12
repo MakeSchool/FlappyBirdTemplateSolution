@@ -24,8 +24,6 @@
     BOOL _gameOver;
     CCLabelTTF *_scoreLabel;
     CCLabelTTF *_nameLabel;
-    
-    int points;
 }
 
 -(void) addToScene:(CCNode *)node
@@ -38,9 +36,8 @@
     _scoreLabel.visible = YES;
 }
 
--(void) increaseScore
+-(void) updateScore
 {
-    points++;
     _scoreLabel.string = [NSString stringWithFormat:@"%d", points];
 }
 
@@ -59,7 +56,14 @@
     physicsNode.collisionDelegate = self;
     
     _obstacles = [NSMutableArray array];
+    powerups = [NSMutableArray array];
     points = 0;
+    
+    trail = (CCParticleSystem *)[CCBReader load:@"Trail"];
+    trail.particlePositionType = CCParticleSystemPositionTypeRelative;
+    trail.emitterMode = CCParticleSystemPositionTypeRelative;
+    [physicsNode addChild:trail];
+    trail.visible = false;
     
     [super initialize];
 }
