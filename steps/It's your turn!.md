@@ -6,15 +6,15 @@ you will see power-ups appear between obstacles.
 Next, you'll need to add a method for when you collide with the power-up, which looks
 like this:
 
-		-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)character powerup:(CCSprite *)powerup
-		{
-			return TRUE;
-		}
+	-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)character powerup:(CCSprite *)powerup
+	{
+		return TRUE;
+	}
 
 We've also added a special particle effect to Flappy that you can show
 by writing:
 
-		trail.visible = TRUE;
+	trail.visible = TRUE;
 
 Conversely, you can hide the effect by using ```FALSE``` instead of ```TRUE```.
 
