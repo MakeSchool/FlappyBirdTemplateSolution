@@ -17,18 +17,18 @@ For example, to declare a method that does not return anything and does not acce
 
 Or, to declare a method that returns an int and accepts a string:
 
-		-(int) doSomethingWithAString: (NSString\\*) myString
+		-(int) doSomethingWithAString: (NSString *) myString
 		{
 			//returns the length of the string times ten
-			return [myString length] \\* 10;
+			return [myString length] * 10;
 		}
 
 Or, to declare a method that returns an array and accepts multiple strings:
 
 
-		-(NSArray\\*) addThisStringToAnArray: (NSString\\*) firstString
-								andThisString: (NSString\\*) secondString
-								andAlsoThisString: (NSString\\*) thirdString
+		-(NSArray *) addThisStringToAnArray: (NSString *) firstString
+								andThisString: (NSString *) secondString
+								andAlsoThisString: (NSString *) thirdString
 		{
 			return [NSArray arrayWithObjects: firstString,
 				secondString,
@@ -42,7 +42,7 @@ For your game to respond to input, we have to write a new method to be run whene
 the player touches the screen. Add the following after the closing bracket of the init method
 but before the ```@end```:
 
-		- (void)touchBegan:(UITouch\\*)touch withEvent:(UIEvent\\*)event
+		- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event
 		{
 			// this will get called every time the player
 			// touches the screen.
@@ -52,7 +52,7 @@ Now that we have code that is run every time the player touches the screen, we w
 the character jump. To do that, we need to add a physics impulse. Inside your ```touchBegan```
 method, add the following code:
 
-			float impulse = 200-2\\*character.physicsBody.velocity.y;
+			float impulse = 200-2*character.physicsBody.velocity.y;
 			[character.physicsBody applyImpulse:ccp(0, impulse)];
 
 Here the impulse is a vector pointing straight up. You can modify how far up the character
