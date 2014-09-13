@@ -22,11 +22,19 @@ Limiting the jump!
 =======================
 
 Now that we have an update loop, limiting the jump is rather easy. We just need to
-clamp the vertical velocity. To do that, in your ```update``` method, add:
+limit the vertical velocity to stay within the range -800 to 200. To do that, in your ```update``` method, add:
 
-	character.physicsBody.velocity = ccp(0, clampf(character.physicsBody.velocity.y, -800, 200));
-
-We are using the method ```clampf``` to ensure that the ```character.physicsBody.velocity.y```
-variable stays within the range ```-800``` to ```200```.
+	if (character.physicsBody.velocity.y < -800)
+	{
+		character.physicsBody.velocity = ccp(0, -800);
+	}
+	else if (character.physicsBody.velocity.y > 200)
+	{
+		character.physicsBody.velocity = ccp(0, 200);
+	}
+	else
+	{
+		character.physicsBody.velocity = ccp(0, character.physicsBody.velocity.y);
+	}
 
 Now run the game and see what you did!
