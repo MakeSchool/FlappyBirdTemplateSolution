@@ -7,7 +7,7 @@ how to do that: we just need to add velocity!
 
 To do that, change the lines
 
-      	if (character.physicsBody.velocity.y < -800)
+	if (character.physicsBody.velocity.y < -800)
 	{
 		character.physicsBody.velocity = ccp(0, -800);
 	}
@@ -22,7 +22,7 @@ To do that, change the lines
 
 to
 
-      	if (character.physicsBody.velocity.y < -800)
+	if (character.physicsBody.velocity.y < -800)
 	{
 		character.physicsBody.velocity = ccp(80, -800);
 	}
