@@ -48,16 +48,6 @@
     [self createAndRunFlappyAnimation];
 }
 
-- (void)flap
-{
-    [self.physicsBody applyImpulse:ccp(0, 400.f)];
-}
-
-- (void)move
-{
-    self.physicsBody.velocity = ccp(80, self.physicsBody.velocity.y);
-}
-
 - (void)createAndRunFlappyAnimation
 {
     CCSpriteFrame* fly1 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly1.png"];

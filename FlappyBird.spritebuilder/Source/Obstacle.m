@@ -55,9 +55,9 @@ static const CGFloat maximumYPosition = 380.f;
         bottomPipePhysicsBody.type = CCPhysicsBodyTypeStatic;
         
         topPipePhysicsBody.collisionType = @"level";
-        topPipePhysicsBody.sensor = YES;
-        
         bottomPipePhysicsBody.collisionType = @"level";
+        
+        topPipePhysicsBody.sensor = YES;
         bottomPipePhysicsBody.sensor = YES;
         
         _topPipe.physicsBody = topPipePhysicsBody;

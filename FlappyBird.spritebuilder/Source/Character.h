@@ -10,8 +10,6 @@
 
 @interface Character : CCSprite
 
--(void) flap;
--(void) move;
 +(Character *) createFlappy;
 
 @end

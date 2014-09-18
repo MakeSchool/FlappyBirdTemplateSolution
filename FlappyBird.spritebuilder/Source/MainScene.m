@@ -16,7 +16,6 @@
     NSArray *_grounds;
     
     NSTimeInterval _sinceTouch;
-    float timeSinceObstacle;
     
     NSMutableArray *_obstacles;
     NSMutableArray *powerups;
@@ -31,6 +30,11 @@
     CCPhysicsNode*    physicsNode;
     CCParticleSystem* trail;
     int               points;
+    
+    // add your custom instance variables here!
+    //---------------------------------------------------------
+    float timeSinceObstacle;
+    //---------------------------------------------------------
 }
 
 - (instancetype)init {
@@ -65,6 +69,7 @@
         physicsNode.position = ccp(0.0f, 9.0f);
         physicsNode.gravity = ccp(0.0f, -700.0f);
         physicsNode.sleepTimeThreshold = 0.5f;
+        physicsNode.collisionDelegate = self;
         [self addChild:physicsNode];
         
         // Create Grounds
@@ -122,9 +127,6 @@
             ground.zOrder = DrawingOrderGround;
         }
         
-        // set this class as delegate
-        physicsNode.collisionDelegate = self;
-        
         _obstacles = [NSMutableArray array];
         powerups = [NSMutableArray array];
         points = 0;
@@ -137,6 +139,8 @@
         [self showScore];
         
         self.userInteractionEnabled = TRUE;
+        
+        [self initialize];
     }
     
     return self;
@@ -177,16 +181,6 @@
     trail.visible = false;
 }
 
-#pragma mark - Touch Handling
-
-- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
-    if (!_gameOver) {
-        [character.physicsBody applyAngularImpulse:10000.f];
-        [character flap];
-        _sinceTouch = 0.f;
-    }
-}
-
 #pragma mark - Game Actions
 
 - (void)gameOver {
@@ -209,7 +203,7 @@
 }
 
 - (void)restart {
-    CCScene *scene = [CCBReader loadAsScene:@"MainScene"];
+    CCScene *scene = [MainScene node];
     [[CCDirector sharedDirector] replaceScene:scene];
 }
 
@@ -229,7 +223,7 @@
 - (void) addPowerup {
     @try
     {
-        CCSprite* powerup = (CCSprite*)[CCBReader load:@"Powerup"];
+        CCSprite* powerup = [CCSprite spriteWithImageNamed:@"FlappyBirdArtPack/powerup_red.png"];
         
         Obstacle* first = (Obstacle*)[_obstacles objectAtIndex: 0];
         Obstacle* second = (Obstacle*)[_obstacles objectAtIndex: 1];
@@ -249,65 +243,107 @@
     }
 }
 
-#pragma mark - Update
+#pragma mark - Score
+
+-(void) showScore {
+    _scoreLabel.visible = YES;
+}
+
+-(void) updateScore {
+    _scoreLabel.string = [NSString stringWithFormat:@"%d", points];
+}
+
+#pragma mark - Modify These Methods!
+
+- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
+    if (!_gameOver) {
+        [character.physicsBody applyAngularImpulse:10000.f];
+        
+        //---------------------------------------------------------
+        float impulse = 200 - 2 * character.physicsBody.velocity.y;
+        [character.physicsBody applyImpulse:ccp(0, impulse)];
+        //---------------------------------------------------------
+        
+        _sinceTouch = 0.f;
+    }
+}
 
 - (void)update:(CCTime)delta {
     
-    [character move];
-    
-    timeSinceObstacle += delta;
-    
-    if (timeSinceObstacle > 2.0f) {
-        [self addObstacle];
-        timeSinceObstacle = 0.0f;
-    }
-    
-    _sinceTouch += delta;
-    
-    character.rotation = clampf(character.rotation, -30.f, 90.f);
-    
-    trail.position = character.position;
-    trail.startColor = [CCColor colorWithCcColor3b:ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255)];
-    
-    if (character.physicsBody.allowsRotation) {
-        float angularVelocity = clampf(character.physicsBody.angularVelocity, -2.f, 1.f);
-        character.physicsBody.angularVelocity = angularVelocity;
-    }
-    
-    if ((_sinceTouch > 0.5f) && character.physicsNode) {
-        [character.physicsBody applyAngularImpulse:-40000.f*delta];
-    }
-    
-    physicsNode.position = ccp(physicsNode.position.x - (character.physicsBody.velocity.x * delta), physicsNode.position.y);
-    
-    // loop the ground
-    for (CCNode *ground in _grounds) {
-        // get the world position of the ground
-        CGPoint groundWorldPosition = [physicsNode convertToWorldSpace:ground.position];
-        // get the screen position of the ground
-        CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
-        
-        // if the left corner is one complete width off the screen, move it to the right
-        if (groundScreenPosition.x <= (-1 * ground.contentSize.width)) {
-            ground.position = ccp(ground.position.x + 2 * ground.contentSize.width, ground.position.y);
-        }
-    }
-    
-    NSMutableArray *offScreenObstacles = nil;
-    
-    for (CCNode *obstacle in _obstacles) {
-        CGPoint obstacleWorldPosition = [physicsNode convertToWorldSpace:obstacle.position];
-        CGPoint obstacleScreenPosition = [self convertToNodeSpace:obstacleWorldPosition];
-        if (obstacleScreenPosition.x < -obstacle.contentSize.width) {
-            if (!offScreenObstacles) {
-                offScreenObstacles = [NSMutableArray array];
-            }
-            [offScreenObstacles addObject:obstacle];
-        }
-    }
-    
     if (!_gameOver)
     {
+        
+        //---------------------------------------------------------
+        timeSinceObstacle += delta;
+        
+        if (timeSinceObstacle > 2)
+        {
+            // Add a new obstacle
+            [self addObstacle];
+            [self addPowerup];
+            // Then reset the timer.
+            timeSinceObstacle = 0;
+        }
+        
+        if (character.physicsBody.velocity.y < -800)
+        {
+            character.physicsBody.velocity = ccp(80, -800);
+        }
+        else if (character.physicsBody.velocity.y > 200)
+        {
+            character.physicsBody.velocity = ccp(80, 200);
+        }
+        else
+        {
+            character.physicsBody.velocity = ccp(80, character.physicsBody.velocity.y);
+        }
+        //---------------------------------------------------------
+        
+        _sinceTouch += delta;
+        
+        character.rotation = clampf(character.rotation, -30.f, 90.f);
+        
+        trail.position = character.position;
+        trail.startColor = [CCColor colorWithCcColor3b:ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255)];
+        
+        if (character.physicsBody.allowsRotation) {
+            float angularVelocity = clampf(character.physicsBody.angularVelocity, -2.f, 1.f);
+            character.physicsBody.angularVelocity = angularVelocity;
+        }
+        
+        if ((_sinceTouch > 0.5f) && character.physicsNode) {
+            [character.physicsBody applyAngularImpulse:-40000.f*delta];
+        }
+        
+
+        physicsNode.position = ccp(physicsNode.position.x - (character.physicsBody.velocity.x * delta), physicsNode.position.y);
+        
+        // loop the ground
+        for (CCNode *ground in _grounds) {
+            // get the world position of the ground
+            CGPoint groundWorldPosition = [physicsNode convertToWorldSpace:ground.position];
+            // get the screen position of the ground
+            CGPoint groundScreenPosition = [self convertToNodeSpace:groundWorldPosition];
+            
+            // if the left corner is one complete width off the screen, move it to the right
+            if (groundScreenPosition.x <= (-1 * ground.contentSize.width)) {
+                ground.position = ccp(ground.position.x + 2 * ground.contentSize.width, ground.position.y);
+            }
+        }
+        
+        NSMutableArray *offScreenObstacles = nil;
+        
+        for (CCNode *obstacle in _obstacles) {
+            CGPoint obstacleWorldPosition = [physicsNode convertToWorldSpace:obstacle.position];
+            CGPoint obstacleScreenPosition = [self convertToNodeSpace:obstacleWorldPosition];
+            if (obstacleScreenPosition.x < -obstacle.contentSize.width) {
+                if (!offScreenObstacles) {
+                    offScreenObstacles = [NSMutableArray array];
+                }
+                [offScreenObstacles addObject:obstacle];
+            }
+        }
+        
         @try
         {
             character.physicsBody.velocity = ccp(character.physicsBody.velocity.x, clampf(character.physicsBody.velocity.y, -MAXFLOAT, 200.f));
@@ -319,20 +355,38 @@
     }
 }
 
-#pragma mark - Score
+#pragma mark - Implement Your Methods Here!
 
--(void) showScore {
-    _scoreLabel.visible = YES;
+//---------------------------------------------------------
+- (void)initialize
+{
+    [self addObstacle];
+    
+    timeSinceObstacle = 0;
+    
+    [self showScore];
 }
 
--(void) updateScore {
-    _scoreLabel.string = [NSString stringWithFormat:@"%d", points];
+
+- (BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCNode *)character level:(CCNode *)level
+{
+    [self gameOver];
+    return YES;
 }
 
-#pragma mark - Utility
-
--(void) addToScene:(CCNode *)node {
-    [physicsNode addChild:node];
+- (BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCNode *)character goal:(CCNode *)goal
+{
+    [goal removeFromParent];
+    points++;
+    [self updateScore];
+    return YES;
 }
+
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)character powerup:(CCSprite *)powerup
+{
+    trail.visible = TRUE;
+    return TRUE;
+}
+//---------------------------------------------------------
 
 @end
