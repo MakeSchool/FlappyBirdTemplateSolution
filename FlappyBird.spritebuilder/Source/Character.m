@@ -7,20 +7,40 @@
 //
 
 #import "Character.h"
-#import "GamePlayScene.h"
+#import "MainScene.h"
+#import "CCAnimation.h"
 
 @implementation Character
 
 + (Character *)createFlappy
 {
-    return (Character*)[CCBReader load:@"Character"];
+    return [[Character alloc] initWithImageNamed:@"FlappyBirdArtPack/fly1.png"];
 }
 
-- (void)didLoadFromCCB
+- (instancetype)initWithImageNamed:(NSString *)imageName
 {
-    self.position = ccp(115, 250);
-    self.zOrder = DrawingOrderHero;
-    self.physicsBody.collisionType = @"character";
+    self = [super initWithImageNamed:imageName];
+    
+    if (self)
+    {
+        self.position = ccp(115, 250);
+        self.zOrder = DrawingOrderHero;
+        
+        // Set up physics
+        CGRect characterBodyShape = CGRectMake(0.0f, 0.0f, 23.0f, 33.0f);
+        CCPhysicsBody* characterPhysicsBody = [CCPhysicsBody bodyWithRect:characterBodyShape cornerRadius:0.0f];
+        self.physicsBody = characterPhysicsBody;
+        self.physicsBody.collisionType = @"character";
+    }
+    
+    return self;
+}
+
+- (void)onEnter
+{
+    [super onEnter];
+    
+    [self createAndRunFlappyAnimation];
 }
 
 - (void)flap
@@ -31,6 +51,14 @@
 - (void)move
 {
     self.physicsBody.velocity = ccp(80, self.physicsBody.velocity.y);
+}
+
+- (void)createAndRunFlappyAnimation
+{
+    CCSpriteFrame* fly1 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly1.png"];
+    CCSpriteFrame* fly2 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly2.png"];
+    CCAnimation* flappyAnimation = [CCAnimation animationWithSpriteFrames:@[fly1, fly2] delay:0.1666f];
+    [self runAction:[CCActionAnimate actionWithAnimation:flappyAnimation]];
 }
 
 @end

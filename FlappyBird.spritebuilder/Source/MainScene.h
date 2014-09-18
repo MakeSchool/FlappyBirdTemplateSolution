@@ -7,8 +7,13 @@
 //
 
 #import "CCNode.h"
-#import "GamePlayScene.h"
 
-@interface MainScene : GamePlayScene
+typedef NS_ENUM(NSInteger, DrawingOrder) {
+    DrawingOrderPipes,
+    DrawingOrderGround,
+    DrawingOrderHero
+};
+
+@interface MainScene : CCScene <CCPhysicsCollisionDelegate>
 
 @end

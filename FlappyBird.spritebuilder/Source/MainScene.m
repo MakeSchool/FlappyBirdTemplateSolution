@@ -8,6 +8,7 @@
 
 #import "MainScene.h"
 #import "Obstacle.h"
+#import "Character.h"
 
 @implementation MainScene {
     CCNode *_ground1;
@@ -15,6 +16,7 @@
     NSArray *_grounds;
     
     NSTimeInterval _sinceTouch;
+    float timeSinceObstacle;
     
     NSMutableArray *_obstacles;
     NSMutableArray *powerups;
@@ -24,48 +26,155 @@
     BOOL _gameOver;
     CCLabelTTF *_scoreLabel;
     CCLabelTTF *_nameLabel;
-}
-
--(void) addToScene:(CCNode *)node
-{
-    [physicsNode addChild:node];
-}
-
--(void) showScore
-{
-    _scoreLabel.visible = YES;
-}
-
--(void) updateScore
-{
-    _scoreLabel.string = [NSString stringWithFormat:@"%d", points];
-}
-
-- (void)didLoadFromCCB {
-    self.userInteractionEnabled = TRUE;
     
-    _grounds = @[_ground1, _ground2];
+    Character*        character;
+    CCPhysicsNode*    physicsNode;
+    CCParticleSystem* trail;
+    int               points;
+}
+
+- (instancetype)init {
+    self = [super init];
     
-    for (CCNode *ground in _grounds) {
-        // set collision txpe
-        ground.physicsBody.collisionType = @"level";
-        ground.zOrder = DrawingOrderGround;
+    if (self) {
+        
+        CGSize viewSize = [CCDirector sharedDirector].viewSize;
+        
+        // Create Background
+        CCSprite* background = [CCSprite spriteWithImageNamed:@"FlappyBirdArtPack/background.png"];
+        background.anchorPoint = ccp(0.0f, 0.0f);
+        background.position = ccp(0.0f, 0.0f);
+        background.scale = 1.17f;
+        [self addChild:background];
+        
+        // Create Cloud
+        CCSprite* cloud = [CCSprite spriteWithImageNamed:@"FlappyBirdArtPack/clouds.png"];
+        cloud.anchorPoint = ccp(0.0f, 0.5f);
+        cloud.position = ccp(0.0f, 434.0f);
+        [self addChild:cloud];
+        
+        // Create Bush
+        CCSprite* bush = [CCSprite spriteWithImageNamed:@"FlappyBirdArtPack/bush.png"];
+        bush.anchorPoint = ccp(0.0f, 0.5f);
+        bush.position = ccp(0.0f, 106.0f);
+        [self addChild:bush];
+        
+        // Create Physics Node
+        physicsNode = [CCPhysicsNode node];
+        physicsNode.contentSize = CGSizeMake(viewSize.width, viewSize.height);
+        physicsNode.position = ccp(0.0f, 9.0f);
+        physicsNode.gravity = ccp(0.0f, -700.0f);
+        physicsNode.sleepTimeThreshold = 0.5f;
+        [self addChild:physicsNode];
+        
+        // Create Grounds
+        // -- Ground Sprites
+        _ground1 = [CCSprite spriteWithImageNamed:@"FlappyBirdArtPack/ground.png"];
+        _ground2 = [CCSprite spriteWithImageNamed:@"FlappyBirdArtPack/ground.png"];
+        
+        _ground1.anchorPoint = ccp(0.0f, 0.5f);
+        _ground2.anchorPoint = ccp(0.0f, 0.5f);
+        
+        _ground1.position = ccp(0.0f, 25.0f);
+        _ground2.position = ccp(462.0f, 25.0f);
+        
+        // -- Ground Physics
+        CGRect groundBodyShape = CGRectMake(0.0f, 0.0f, 462.0f, 112.0f);
+        CCPhysicsBody* ground1PhysicsBody = [CCPhysicsBody bodyWithRect:groundBodyShape cornerRadius:0.0f];
+        CCPhysicsBody* ground2PhysicsBody = [CCPhysicsBody bodyWithRect:groundBodyShape cornerRadius:0.0f];
+        
+        ground1PhysicsBody.density = 1.0f;
+        ground2PhysicsBody.density = 1.0f;
+        ground1PhysicsBody.friction = 0.3f;
+        ground2PhysicsBody.friction = 0.3f;
+        ground1PhysicsBody.elasticity = 0.3f;
+        ground2PhysicsBody.elasticity = 0.3f;
+
+        ground1PhysicsBody.type = CCPhysicsBodyTypeStatic;
+        ground2PhysicsBody.type = CCPhysicsBodyTypeStatic;
+        
+        _ground1.physicsBody = ground1PhysicsBody;
+        _ground2.physicsBody = ground2PhysicsBody;
+        
+        [physicsNode addChild:_ground1];
+        [physicsNode addChild:_ground2];
+        
+        // Create Restart Button
+        _restartButton = [CCButton buttonWithTitle:@"Restart"];
+        [_restartButton setTarget:self selector:@selector(restart)];
+        _restartButton.anchorPoint = ccp(0.5f, 0.5f);
+        _restartButton.position = ccp(viewSize.width / 2.0f, viewSize.height / 2.0f);
+        _restartButton.visible = NO;
+        [self addChild:_restartButton];
+        
+        // Create Score Label
+        _scoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Courier" fontSize:60.0f];
+        _scoreLabel.anchorPoint = ccp(0.5f, 0.5f);
+        _scoreLabel.position = ccp(viewSize.width / 2.0f, viewSize.height - 60.0f);
+        _scoreLabel.color = [CCColor whiteColor];
+        [self addChild:_scoreLabel];
+        
+        _grounds = @[_ground1, _ground2];
+        
+        for (CCNode *ground in _grounds) {
+            // set collision txpe
+            ground.physicsBody.collisionType = @"level";
+            ground.zOrder = DrawingOrderGround;
+        }
+        
+        // set this class as delegate
+        physicsNode.collisionDelegate = self;
+        
+        _obstacles = [NSMutableArray array];
+        powerups = [NSMutableArray array];
+        points = 0;
+        
+        [self createTrail];
+        
+        character = [Character createFlappy];
+        [physicsNode addChild:character];
+        
+        [self showScore];
+        
+        self.userInteractionEnabled = TRUE;
     }
     
-    // set this class as delegate
-    physicsNode.collisionDelegate = self;
+    return self;
+}
+
+- (void)createTrail
+{
+    // Create trail particle system
     
-    _obstacles = [NSMutableArray array];
-    powerups = [NSMutableArray array];
-    points = 0;
+    trail = [CCParticleSystem particleWithTotalParticles:300];
+    trail.anchorPoint = ccp(0.0f, 0.0f);
+    trail.emitterMode = CCParticleSystemModeGravity;
+    trail.posVar = ccp(5.0f, 5.0f);
+    trail.emissionRate = 150.0f;
+    trail.duration = CCParticleSystemDurationInfinity;
+    trail.life = 0.5f;
+    trail.lifeVar = 1.4f;
+    trail.startSize = 1.0f;
+    trail.startSizeVar = 50.0f;
+    trail.endSize = 30.0f;
+    trail.angleVar = 360.0f;
+    trail.startColor = [CCColor colorWithCcColor4b:ccc4(146, 146, 146, 179)];
+    trail.startColorVar = [CCColor colorWithCcColor4b:ccc4(238, 241, 211, 219)];
+    trail.endColor = [CCColor colorWithCcColor4b:ccc4(212, 228, 7, 156)];
+    trail.endColorVar = [CCColor colorWithCcColor4b:ccc4(53, 253, 255, 255)];
+    trail.gravity = ccp(0.0f, 0.0f);
+    trail.speed = 0.0f;
+    trail.speedVar = 200.0f;
+    trail.tangentialAccel = -90.0f;
+    trail.tangentialAccelVar = 70.0f;
+    trail.radialAccel = -650.0f;
+    trail.radialAccelVar = 70.0f;
+    trail.texture = [CCTexture textureWithFile:@"FlappyBirdArtPack/fly1.png"];
     
-    trail = (CCParticleSystem *)[CCBReader load:@"Trail"];
     trail.particlePositionType = CCParticleSystemPositionTypeRelative;
     trail.emitterMode = CCParticleSystemPositionTypeRelative;
     [physicsNode addChild:trail];
     trail.visible = false;
-    
-    [super initialize];
 }
 
 #pragma mark - Touch Handling
@@ -73,16 +182,8 @@
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     if (!_gameOver) {
         [character.physicsBody applyAngularImpulse:10000.f];
+        [character flap];
         _sinceTouch = 0.f;
-        
-        @try
-        {
-            [super touchBegan:touch withEvent:event];
-        }
-        @catch(NSException* ex)
-        {
-            
-        }
     }
 }
 
@@ -115,7 +216,7 @@
 #pragma mark - Obstacle Spawning
 
 - (void)addObstacle {
-    Obstacle *obstacle = (Obstacle *)[CCBReader load:@"Obstacle"];
+    Obstacle *obstacle = [Obstacle new];
     CGPoint screenPosition = [self convertToWorldSpace:ccp(380, 0)];
     CGPoint worldPosition = [physicsNode convertToNodeSpace:screenPosition];
     obstacle.position = worldPosition;
@@ -150,8 +251,17 @@
 
 #pragma mark - Update
 
-- (void)update:(CCTime)delta
-{
+- (void)update:(CCTime)delta {
+    
+    [character move];
+    
+    timeSinceObstacle += delta;
+    
+    if (timeSinceObstacle > 2.0f) {
+        [self addObstacle];
+        timeSinceObstacle = 0.0f;
+    }
+    
     _sinceTouch += delta;
     
     character.rotation = clampf(character.rotation, -30.f, 90.f);
@@ -201,14 +311,28 @@
         @try
         {
             character.physicsBody.velocity = ccp(character.physicsBody.velocity.x, clampf(character.physicsBody.velocity.y, -MAXFLOAT, 200.f));
-            
-            [super update:delta];
         }
         @catch(NSException* ex)
         {
             
         }
     }
+}
+
+#pragma mark - Score
+
+-(void) showScore {
+    _scoreLabel.visible = YES;
+}
+
+-(void) updateScore {
+    _scoreLabel.string = [NSString stringWithFormat:@"%d", points];
+}
+
+#pragma mark - Utility
+
+-(void) addToScene:(CCNode *)node {
+    [physicsNode addChild:node];
 }
 
 @end

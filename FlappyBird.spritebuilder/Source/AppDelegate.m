@@ -26,14 +26,14 @@
 #import "cocos2d.h"
 
 #import "AppDelegate.h"
-#import "CCBuilderReader.h"
+#import "MainScene.h"
 
 @implementation AppController
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Configure Cocos2d with the options set in SpriteBuilder
-    NSString* configPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Published-iOS"]; // TODO: add support for Published-Android support
+    NSString* configPath = [[NSBundle mainBundle] resourcePath];
     configPath = [configPath stringByAppendingPathComponent:@"configCocos2d.plist"];
     
     NSMutableDictionary* cocos2dSetup = [NSMutableDictionary dictionaryWithContentsOfFile:configPath];
@@ -59,7 +59,7 @@
 
 - (CCScene*) startScene
 {
-    return [CCBReader loadAsScene:@"MainScene"];
+    return [MainScene node];
 }
 
 @end
