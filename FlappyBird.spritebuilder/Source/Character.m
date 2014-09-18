@@ -31,6 +31,11 @@
         CCPhysicsBody* characterPhysicsBody = [CCPhysicsBody bodyWithRect:characterBodyShape cornerRadius:0.0f];
         self.physicsBody = characterPhysicsBody;
         self.physicsBody.collisionType = @"character";
+        self.physicsBody.density = 1.0f;
+        self.physicsBody.friction = 0.3f;
+        self.physicsBody.elasticity = 0.3f;
+        self.physicsBody.allowsRotation = YES;
+        self.physicsBody.affectedByGravity = YES;
     }
     
     return self;
@@ -57,7 +62,7 @@
 {
     CCSpriteFrame* fly1 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly1.png"];
     CCSpriteFrame* fly2 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly2.png"];
-    CCAnimation* flappyAnimation = [CCAnimation animationWithSpriteFrames:@[fly1, fly2] delay:0.1666f];
+    CCAnimation* flappyAnimation = [CCAnimation animationWithSpriteFrames:@[fly1, fly2] delay:0.3333f];
     [self runAction:[CCActionAnimate actionWithAnimation:flappyAnimation]];
 }
 
