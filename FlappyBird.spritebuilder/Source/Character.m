@@ -48,6 +48,13 @@
     [self createAndRunFlappyAnimation];
 }
 
+- (void)onExit
+{
+    [self stopAllActions];
+    
+    [super onExit];
+}
+
 - (void)createAndRunFlappyAnimation
 {
     CCSpriteFrame* fly1 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly1.png"];
