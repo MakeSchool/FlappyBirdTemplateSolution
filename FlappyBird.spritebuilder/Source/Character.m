@@ -23,12 +23,12 @@
     
     if (self)
     {
+        self.anchorPoint = ccp(0.5f, 0.5f);
         self.position = ccp(115, 250);
         self.zOrder = DrawingOrderHero;
         
         // Set up physics
-        CGRect characterBodyShape = CGRectMake(0.0f, 0.0f, 23.0f, 33.0f);
-        CCPhysicsBody* characterPhysicsBody = [CCPhysicsBody bodyWithRect:characterBodyShape cornerRadius:0.0f];
+        CCPhysicsBody* characterPhysicsBody = [CCPhysicsBody bodyWithCircleOfRadius:15.0f andCenter:ccp(17.0f, 12.0f)];
         self.physicsBody = characterPhysicsBody;
         self.physicsBody.collisionType = @"character";
         self.physicsBody.density = 1.0f;
