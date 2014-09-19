@@ -105,8 +105,10 @@
         [physicsNode addChild:_ground2];
         
         // Create Restart Button
-        _restartButton = [CCButton buttonWithTitle:@"Restart"];
+        CCSpriteFrame* buttonBGSpriteFrame = [CCSpriteFrame frameWithImageNamed:@"ccbButtonNormal.png"];
+        _restartButton = [CCButton buttonWithTitle:@"Restart" spriteFrame:buttonBGSpriteFrame];
         [_restartButton setTarget:self selector:@selector(restart)];
+        _restartButton.preferredSize = CGSizeMake(60.0f, 40.0f);
         _restartButton.anchorPoint = ccp(0.5f, 0.5f);
         _restartButton.position = ccp(viewSize.width / 2.0f, viewSize.height / 2.0f);
         _restartButton.visible = NO;

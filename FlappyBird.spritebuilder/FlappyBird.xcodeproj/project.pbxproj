@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		65BDFDCA19CA518700077C8C /* FlappyBirdArtPack in Resources */ = {isa = PBXBuildFile; fileRef = 65BDFDC919CA518700077C8C /* FlappyBirdArtPack */; };
 		65BDFDCD19CA51D500077C8C /* configCocos2d.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65BDFDCC19CA51D500077C8C /* configCocos2d.plist */; };
+		65BDFDE419CCB86400077C8C /* resources-phone in Resources */ = {isa = PBXBuildFile; fileRef = 65BDFDE019CCB86400077C8C /* resources-phone */; };
+		65BDFDE519CCB86400077C8C /* resources-phonehd in Resources */ = {isa = PBXBuildFile; fileRef = 65BDFDE119CCB86400077C8C /* resources-phonehd */; };
+		65BDFDE619CCB86400077C8C /* resources-tablet in Resources */ = {isa = PBXBuildFile; fileRef = 65BDFDE219CCB86400077C8C /* resources-tablet */; };
+		65BDFDE719CCB86400077C8C /* resources-tablethd in Resources */ = {isa = PBXBuildFile; fileRef = 65BDFDE319CCB86400077C8C /* resources-tablethd */; };
 		8392007A18EE8E3300B6C429 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8392007918EE8E3300B6C429 /* GLKit.framework */; };
 		B71F5911188484E7003F4D28 /* iPad-old.png in Resources */ = {isa = PBXBuildFile; fileRef = B71F5907188484E7003F4D28 /* iPad-old.png */; };
 		B71F5912188484E7003F4D28 /* iPad-old@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B71F5908188484E7003F4D28 /* iPad-old@2x.png */; };
@@ -63,6 +67,10 @@
 /* Begin PBXFileReference section */
 		65BDFDC919CA518700077C8C /* FlappyBirdArtPack */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FlappyBirdArtPack; sourceTree = "<group>"; };
 		65BDFDCC19CA51D500077C8C /* configCocos2d.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = configCocos2d.plist; sourceTree = "<group>"; };
+		65BDFDE019CCB86400077C8C /* resources-phone */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "resources-phone"; sourceTree = "<group>"; };
+		65BDFDE119CCB86400077C8C /* resources-phonehd */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "resources-phonehd"; sourceTree = "<group>"; };
+		65BDFDE219CCB86400077C8C /* resources-tablet */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "resources-tablet"; sourceTree = "<group>"; };
+		65BDFDE319CCB86400077C8C /* resources-tablethd */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "resources-tablethd"; sourceTree = "<group>"; };
 		8392007918EE8E3300B6C429 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		B71F5907188484E7003F4D28 /* iPad-old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iPad-old.png"; path = "Icons/iPad-old.png"; sourceTree = "<group>"; };
 		B71F5908188484E7003F4D28 /* iPad-old@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iPad-old@2x.png"; path = "Icons/iPad-old@2x.png"; sourceTree = "<group>"; };
@@ -223,6 +231,10 @@
 			isa = PBXGroup;
 			children = (
 				65BDFDCC19CA51D500077C8C /* configCocos2d.plist */,
+				65BDFDE019CCB86400077C8C /* resources-phone */,
+				65BDFDE119CCB86400077C8C /* resources-phonehd */,
+				65BDFDE219CCB86400077C8C /* resources-tablet */,
+				65BDFDE319CCB86400077C8C /* resources-tablethd */,
 				65BDFDC919CA518700077C8C /* FlappyBirdArtPack */,
 				BC49B67419CA007500324923 /* Images.xcassets */,
 				B73789911807667A0076A88C /* Icons */,
@@ -318,17 +330,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65BDFDE619CCB86400077C8C /* resources-tablet in Resources */,
 				B71F5919188484E7003F4D28 /* Settings.png in Resources */,
 				BC49B67519CA007500324923 /* Images.xcassets in Resources */,
 				65BDFDCD19CA51D500077C8C /* configCocos2d.plist in Resources */,
 				B7378978180762440076A88C /* Default@2x.png in Resources */,
 				B71F5914188484E7003F4D28 /* iPad@2x.png in Resources */,
 				65BDFDCA19CA518700077C8C /* FlappyBirdArtPack in Resources */,
+				65BDFDE519CCB86400077C8C /* resources-phonehd in Resources */,
 				B71F5913188484E7003F4D28 /* iPad.png in Resources */,
+				65BDFDE419CCB86400077C8C /* resources-phone in Resources */,
 				B71F5912188484E7003F4D28 /* iPad-old@2x.png in Resources */,
 				B71F5916188484E7003F4D28 /* iPhone-old@2x.png in Resources */,
 				B71F591A188484E7003F4D28 /* Settings@2x.png in Resources */,
 				B7378976180762440076A88C /* Default-Landscape~ipad.png in Resources */,
+				65BDFDE719CCB86400077C8C /* resources-tablethd in Resources */,
 				B71F5915188484E7003F4D28 /* iPhone-old.png in Resources */,
 				B71F5917188484E7003F4D28 /* iPhone.png in Resources */,
 				B7378975180762440076A88C /* Default-568h@2x.png in Resources */,

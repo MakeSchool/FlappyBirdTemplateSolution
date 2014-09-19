@@ -52,8 +52,10 @@
 {
     CCSpriteFrame* fly1 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly1.png"];
     CCSpriteFrame* fly2 = [CCSpriteFrame frameWithImageNamed:@"FlappyBirdArtPack/fly2.png"];
-    CCAnimation* flappyAnimation = [CCAnimation animationWithSpriteFrames:@[fly1, fly2] delay:0.3333f];
-    [self runAction:[CCActionAnimate actionWithAnimation:flappyAnimation]];
+    CCAnimation* flappyAnimation = [CCAnimation animationWithSpriteFrames:@[fly1, fly2] delay:0.16666f];
+    CCActionInterval* animationAction = [CCActionAnimate actionWithAnimation:flappyAnimation];
+    CCActionInterval* loopAnimation = [CCActionRepeatForever actionWithAction:animationAction];
+    [self runAction:loopAnimation];
 }
 
 @end
